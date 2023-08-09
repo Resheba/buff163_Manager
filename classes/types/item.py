@@ -52,5 +52,10 @@ class Item:
     paintindex: int
     paintwear: float
     price: float
+    icon_url: str
+    assetid: str
+    classid: str
+    contextid: int
+    instanceid: str
     stickers: list[Sticker] = field(default_factory=list)
 

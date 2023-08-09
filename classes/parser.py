@@ -78,6 +78,7 @@ def ItemsResponseParser(
     good_name: str = good_info.get('name')
     steam_price: float = float(good_info.get('steam_price'))
     steam_price_cny: float = float(good_info.get('steam_price_cny'))
+    icon_url: str = good_info.get('icon_url')
     
     good = Good(
         id=good_id,
@@ -94,6 +95,12 @@ def ItemsResponseParser(
         allow_bargain: bool = item.get('allow_bargain')
         price: float = float(item.get('price'))
         temp_dict: dict = item.get('asset_info')
+        #
+        assetid: str = temp_dict.get('assetid')
+        classid: str = temp_dict.get('classid')
+        contextid: int = temp_dict.get('contextid')
+        instanceid: str = temp_dict.get('instanceid')
+        #
         paintwear: float = float(temp_dict.get('paintwear'))
         temp_dict: dict = temp_dict.get('info')
         paintindex: int = temp_dict.get('paintindex')
@@ -126,7 +133,13 @@ def ItemsResponseParser(
             paintindex=paintindex,
             paintwear=paintwear,
             price=price,
-            stickers=stickers
+            stickers=stickers,
+            icon_url=icon_url,
+            assetid=assetid,
+            classid=classid,
+            contextid=contextid,
+            instanceid=instanceid
+
         )
         items.append(item)
 

@@ -12,6 +12,7 @@ This is a duplicate module.
 
 from classes.types.item import Good, Sticker, Item
 from classes.types.response import ResponseGoods, ResponseItems, DataItems, DataGoods
+from database import StickerBase
 
 
 def GoodsResponseParser(
@@ -64,7 +65,8 @@ def GoodsResponseParser(
 
 
 def ItemsResponseParser(
-        data: dict
+        data: dict,
+        extra_sticker_ids: bool = True
 ) -> ResponseItems:
     code: str = data.get('code')
     msg: str | None = data.get('msg')
@@ -72,12 +74,12 @@ def ItemsResponseParser(
 
     assert code != 'OК', f'Bad Response: {msg}'
     
-    good_info: dict = tuple(data.get('goods_infos').items())[0][1]
+    good_info: dict = tuple(data.get('goods_infos').items() or [[0,dict()]])[0][1]
     
     good_id: int = good_info.get('goods_id')
     good_name: str = good_info.get('name')
-    steam_price: float = float(good_info.get('steam_price'))
-    steam_price_cny: float = float(good_info.get('steam_price_cny'))
+    steam_price: float = float(good_info.get('steam_price') or 0)
+    steam_price_cny: float = float(good_info.get('steam_price_cny') or 0)
     icon_url: str = good_info.get('icon_url')
     
     good = Good(
@@ -101,7 +103,7 @@ def ItemsResponseParser(
         contextid: int = temp_dict.get('contextid')
         instanceid: str = temp_dict.get('instanceid')
         #
-        paintwear: float = float(temp_dict.get('paintwear'))
+        paintwear: float = float(temp_dict.get('paintwear') or 0)
         temp_dict: dict = temp_dict.get('info')
         paintindex: int = temp_dict.get('paintindex')
         paintseed: int = temp_dict.get('paintseed')
@@ -115,13 +117,18 @@ def ItemsResponseParser(
             sticker_name: str = sticker.get('name')
             slot: int = sticker.get('slot')
             wear: float = sticker.get('wear')
+            extra_id: int = None
+
+            if extra_sticker_ids:
+                extra_id = StickerBase.get_sticker_extra(sticker_id=sticker_id)
 
             sticker = Sticker(
                 sticker_id=sticker_id,
                 category=category,
                 name=sticker_name,
                 slot=slot,
-                wear=wear
+                wear=wear,
+                extra_id=extra_id
             )
             stickers.append(sticker)
 

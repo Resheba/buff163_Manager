@@ -41,6 +41,8 @@ class Sticker:
     name: str
     slot: int
     wear: float
+    price: float = None
+    extra_id: int = None
 
 
 @dataclass
